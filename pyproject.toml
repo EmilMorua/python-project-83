@@ -17,6 +17,7 @@ psycopg = "^3.1.9"
 flask-sqlalchemy = "^3.0.5"
 validators = "^0.20.0"
 werkzeug = "^2.3.6"
+pytest-cov = "^4.1.0"
 
 
 [build-system]
