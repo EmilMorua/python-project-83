@@ -18,6 +18,7 @@ flask-sqlalchemy = "^3.0.5"
 validators = "^0.20.0"
 werkzeug = "^2.3.6"
 pytest-cov = "^4.1.0"
+coverage = "^7.2.7"
 
 
 [build-system]
