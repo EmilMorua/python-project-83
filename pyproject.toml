@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Emil Murzin <emil.morua@gmail.com>"]
 readme = "README.md"
-packages = [{include = "hexlet_code"}]
+packages = [{include = "page_analyzer", from = "."}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
