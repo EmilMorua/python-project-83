@@ -25,3 +25,6 @@ start:
 
 .PHONY: build
 build: install
+
+createdb:
+	psql -c "CREATE DATABASE page_analyzer;"
