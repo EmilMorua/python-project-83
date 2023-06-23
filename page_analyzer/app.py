@@ -9,3 +9,7 @@ def index():
     return render_template(
         'index.html',
     )
+
+@app.route('/healthcheck')
+def healthcheck():
+    return "OK"
