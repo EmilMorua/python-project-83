@@ -21,7 +21,8 @@
 <!-- USAGE EXAMPLES -->
 ## Examples of using
 
-[Demo](python-project-83-production-9349.up.railway.app)
+[Demo](https://python-project-83-production-9349.up.railway.app)
+
 
 
 <!-- CONTACT -->
