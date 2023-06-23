@@ -1,6 +1,5 @@
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
-from models import Url, UrlCheck
 import os
 from dotenv import load_dotenv
 from flask import request, redirect, url_for, flash
@@ -12,6 +11,9 @@ app = Flask(__name__)
 load_dotenv()
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 db = SQLAlchemy(app)
+
+
+from page_analyzer.models import Url, UrlCheck
 
 
 @app.route('/', methods=['GET', 'POST'])
