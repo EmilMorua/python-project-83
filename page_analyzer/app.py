@@ -1,10 +1,11 @@
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
-from models import Url
+from models import Url, UrlCheck
 import os
 from dotenv import load_dotenv
 from flask import request, redirect, url_for, flash
 from validators import url as validate_url
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -43,6 +44,28 @@ def url_detail(id):
     else:
         flash('URL не найден', 'error')
         return redirect(url_for('urls'))
+
+
+@app.route('/urls/<int:id>/checks', methods=['POST'])
+def add_check(id):
+    url = Url.query.get(id)
+    if url:
+        new_check = UrlCheck(url_id=id, created_at=datetime.now())
+        db.session.add(new_check)
+        db.session.commit()
+        flash('Проверка успешно добавлена', 'success')
+    else:
+        flash('URL не найден', 'error')
+    return redirect(url_for('url_detail', id=id))
+
+
+def get_last_checks():
+    last_checks = {}
+    checks = UrlCheck.query.order_by(UrlCheck.created_at.desc()).all()
+    for check in checks:
+        if check.url_id not in last_checks:
+            last_checks[check.url_id] = check.created_at
+    return last_checks
 
 
 @app.route('/healthcheck')
