@@ -1,4 +1,4 @@
-from app import db
+from page_analyzer.app import db
 
 
 class Url(db.Model):
