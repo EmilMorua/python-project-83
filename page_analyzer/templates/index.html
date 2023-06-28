@@ -79,6 +79,7 @@
           <h1 class="display-3">Анализатор страниц</h1>
           <p class="lead">Бесплатно проверяйте сайты на SEO-пригодность</p>
           <form action="{{ url_for('index') }}" method="post" class="d-flex justify-content-center">
+            {% from 'macros.html' import csrf_token %}
             {{ csrf_token() }}
             <input type="text" name="url" placeholder="https://www.example.com" value="{{ request.form.get('url') }}" class="form-control form-control-lg" required>
             {% with messages = get_flashed_messages() %}
