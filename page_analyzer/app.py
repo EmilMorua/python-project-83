@@ -4,7 +4,8 @@ from validators import url as validate_url
 from datetime import datetime
 from page_analyzer.forms import URLForm
 import os
-from flask_sqlalchemy import SQLAlchemy
+from page_analyzer.extensions import db
+from page_analyzer.models import Url, UrlCheck
 
 
 app = Flask(__name__)
@@ -12,9 +13,7 @@ load_dotenv()
 app.secret_key = os.getenv('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 
-from page_analyzer.models import Url, UrlCheck  # noqa: E402
-
-db = SQLAlchemy(app)
+db.init_app(app)
 
 
 @app.route('/', methods=['GET', 'POST'])
