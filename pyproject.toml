@@ -19,6 +19,7 @@ validators = "^0.20.0"
 werkzeug = "^2.3.6"
 pytest-cov = "^4.1.0"
 coverage = "^7.2.7"
+flask-wtf = "^1.1.1"
 
 
 [build-system]
