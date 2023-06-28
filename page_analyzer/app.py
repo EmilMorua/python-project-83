@@ -26,7 +26,7 @@ def index():
             db.session.add(new_url)
             db.session.commit()
             flash('URL успешно добавлен', 'success')
-            return redirect(url_for('index'))
+            return redirect(url_for('url_detail', id=new_url.id))
         else:
             flash('Ошибка: некорректный URL', 'error')
 
