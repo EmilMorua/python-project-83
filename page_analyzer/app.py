@@ -57,9 +57,10 @@ def add_check(id):
         db.session.add(new_check)
         db.session.commit()
         flash('Проверка успешно добавлена', 'success')
+        return redirect(url_for('url_detail', id=id))
     else:
         flash('URL не найден', 'error')
-    return redirect(url_for('url_detail', id=id))
+        return redirect(url_for('urls'))
 
 
 def get_last_checks():
