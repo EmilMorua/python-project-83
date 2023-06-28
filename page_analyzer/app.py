@@ -11,7 +11,7 @@ from page_analyzer.models import Url, UrlCheck
 app = Flask(__name__)
 load_dotenv()
 app.secret_key = os.getenv('SECRET_KEY')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['SQLALCHEMY_DATABASE_URI']
 
 db.init_app(app)
 
