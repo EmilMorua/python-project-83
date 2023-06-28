@@ -9,6 +9,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 load_dotenv()
+app.secret_key = os.getenv('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 db = SQLAlchemy(app)
 
