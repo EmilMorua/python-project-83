@@ -1,12 +1,10 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
-import os
 from dotenv import load_dotenv
-from flask import redirect, url_for, flash
 from validators import url as validate_url
 from datetime import datetime
 from page_analyzer.forms import URLForm
-from page_analyzer.models import Url, UrlCheck
+import os
 
 
 app = Flask(__name__)
@@ -14,6 +12,8 @@ load_dotenv()
 app.secret_key = os.getenv('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 db = SQLAlchemy(app)
+
+from page_analyzer.models import Url, UrlCheck
 
 
 @app.route('/', methods=['GET', 'POST'])
