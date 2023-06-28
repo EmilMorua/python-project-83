@@ -13,7 +13,8 @@ app.secret_key = os.getenv('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 db = SQLAlchemy(app)
 
-from page_analyzer.models import Url, UrlCheck
+
+from page_analyzer.models import Url, UrlCheck  # noqa: E402
 
 
 @app.route('/', methods=['GET', 'POST'])
