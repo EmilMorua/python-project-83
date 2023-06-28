@@ -2,10 +2,11 @@ from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 import os
 from dotenv import load_dotenv
-from flask import request, redirect, url_for, flash
+from flask import redirect, url_for, flash
 from validators import url as validate_url
 from datetime import datetime
 from page_analyzer.forms import URLForm
+from page_analyzer.models import Url, UrlCheck
 
 
 app = Flask(__name__)
@@ -13,9 +14,6 @@ load_dotenv()
 app.secret_key = os.getenv('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 db = SQLAlchemy(app)
-
-
-from page_analyzer.models import Url, UrlCheck
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -33,7 +31,6 @@ def index():
             flash('Ошибка: некорректный URL', 'error')
 
     return render_template('index.html', form=form)
-
 
 
 @app.route('/urls')
