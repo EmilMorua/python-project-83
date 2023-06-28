@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from flask import request, redirect, url_for, flash
 from validators import url as validate_url
 from datetime import datetime
+from forms import URLForm
 
 
 app = Flask(__name__)
@@ -19,9 +20,10 @@ from page_analyzer.models import Url, UrlCheck
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    if request.method == 'POST':
-        url = request.form.get('url')
-        if url and validate_url(url) and len(url) <= 255:
+    form = URLForm()
+    if form.validate_on_submit():
+        url = form.url.data
+        if validate_url(url) and len(url) <= 255:
             new_url = Url(name=url)
             db.session.add(new_url)
             db.session.commit()
@@ -30,7 +32,8 @@ def index():
         else:
             flash('Ошибка: некорректный URL', 'error')
 
-    return render_template('index.html')
+    return render_template('index.html', form=form)
+
 
 
 @app.route('/urls')
