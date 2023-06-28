@@ -21,7 +21,7 @@
 <!-- USAGE EXAMPLES -->
 ## Examples of using
 
-[Demo](https://python-project-83-production-9349.up.railway.app)
+[Demo](https://page-analyzer-em.up.railway.app)
 
 
 
