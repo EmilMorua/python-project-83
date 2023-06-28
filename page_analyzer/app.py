@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from flask import request, redirect, url_for, flash
 from validators import url as validate_url
 from datetime import datetime
-from forms import URLForm
+from page_analyzer.forms import URLForm
 
 
 app = Flask(__name__)
