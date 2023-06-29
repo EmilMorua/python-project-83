@@ -6,6 +6,7 @@ from page_analyzer.forms import URLForm
 import os
 from page_analyzer.extensions import db
 from page_analyzer.models import Url, UrlCheck
+import requests
 
 
 app = Flask(__name__)
@@ -36,14 +37,16 @@ def index():
 @app.route('/urls')
 def urls():
     urls = Url.query.order_by(Url.created_at.desc()).all()
-    return render_template('urls.html', urls=urls)
+    last_checks = get_last_checks()
+    return render_template('urls.html', urls=urls, last_checks=last_checks)
 
 
 @app.route('/urls/<int:id>')
 def url_detail(id):
     url = Url.query.get(id)
     if url:
-        return render_template('url.html', url=url)
+        checks = UrlCheck.query.filter_by(url_id=id).order_by(UrlCheck.created_at.desc()).all()
+        return render_template('url.html', url=url, checks=checks)
     else:
         flash('URL не найден', 'error')
         return redirect(url_for('urls'))
@@ -56,7 +59,15 @@ def add_check(id):
         new_check = UrlCheck(url_id=id, created_at=datetime.now())
         db.session.add(new_check)
         db.session.commit()
-        flash('Проверка успешно добавлена', 'success')
+
+        try:
+            response = requests.get(url.name)
+            new_check.status_code = response.status_code
+            db.session.commit()
+            flash('Проверка успешно добавлена', 'success')
+        except requests.exceptions.RequestException:
+            flash('Произошла ошибка при проверке', 'error')
+
         return redirect(url_for('url_detail', id=id))
     else:
         flash('URL не найден', 'error')
@@ -68,7 +79,7 @@ def get_last_checks():
     checks = UrlCheck.query.order_by(UrlCheck.created_at.desc()).all()
     for check in checks:
         if check.url_id not in last_checks:
-            last_checks[check.url_id] = check.created_at
+            last_checks[check.url_id] = check.status_code
     return last_checks
 
 
