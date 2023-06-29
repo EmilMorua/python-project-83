@@ -54,7 +54,9 @@ def test_add_check(client):
     url = Url(name='http://example.com')
     db.session.add(url)
     db.session.commit()
-    response = client.post(url_for('add_check', id=url.id), follow_redirects=True)
+    response = client.post(
+        url_for('add_check', id=url.id),
+        follow_redirects=True)
     assert response.status_code == 200
     assert 'url.html' in response.template.name
     check = UrlCheck.query.filter_by(url_id=url.id).first()
