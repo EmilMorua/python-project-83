@@ -33,7 +33,14 @@
                         </tr>
                     </thead>
                     <tbody>
-
+                        {% for url in urls %}
+                            <tr>
+                                <td>{{ url.id }}</td>
+                                <td>{{ url.name }}</td>
+                                <td>{% if url.id in last_checks %}{{ last_checks[url.id] }}{% endif %}</td>
+                                <td></td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
