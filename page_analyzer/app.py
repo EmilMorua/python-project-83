@@ -1,12 +1,15 @@
-from flask import Flask, render_template, redirect, url_for, flash
-from dotenv import load_dotenv
-from validators import url as validate_url
 from datetime import datetime
-from page_analyzer.forms import URLForm
+
 import os
-from page_analyzer.extensions import db
-from page_analyzer.models import Url, UrlCheck
+from bs4 import BeautifulSoup
 import requests
+from dotenv import load_dotenv
+from flask import Flask, render_template, redirect, url_for, flash
+from validators import url as validate_url
+
+from page_analyzer.extensions import db
+from page_analyzer.forms import URLForm
+from page_analyzer.models import Url, UrlCheck
 
 
 app = Flask(__name__)
@@ -37,15 +40,15 @@ def index():
 @app.route('/urls')
 def urls():
     urls = Url.query.order_by(Url.created_at.desc()).all()
-    last_checks = get_last_checks()
-    return render_template('urls.html', urls=urls, last_checks=last_checks)
+    return render_template('urls.html', urls=urls)
 
 
 @app.route('/urls/<int:id>')
 def url_detail(id):
     url = Url.query.get(id)
     if url:
-        checks = UrlCheck.query.filter_by(url_id=id).order_by(UrlCheck.created_at.desc()).all()
+        checks = UrlCheck.query.filter_by(url_id=id).order_by(
+            UrlCheck.created_at.desc()).all()
         return render_template('url.html', url=url, checks=checks)
     else:
         flash('URL не найден', 'error')
@@ -60,27 +63,29 @@ def add_check(id):
         db.session.add(new_check)
         db.session.commit()
 
-        try:
-            response = requests.get(url.name)
-            new_check.status_code = response.status_code
-            db.session.commit()
-            flash('Проверка успешно добавлена', 'success')
-        except requests.exceptions.RequestException:
-            flash('Произошла ошибка при проверке', 'error')
+        response = requests.get(url.name)
+        soup = BeautifulSoup(response.text, 'html.parser')
 
+        h1_tag = soup.find('h1')
+        if h1_tag:
+            new_check.h1_content = h1_tag.get_text()
+
+        title_tag = soup.find('title')
+        if title_tag:
+            new_check.title_content = title_tag.get_text()
+
+        meta_description_tag = soup.find('meta', attrs={'name': 'description'})
+        if meta_description_tag:
+            new_check.description_content = meta_description_tag.get('content')
+
+        db.session.add(new_check)
+        db.session.commit()
+
+        flash('Проверка успешно добавлена', 'success')
         return redirect(url_for('url_detail', id=id))
     else:
         flash('URL не найден', 'error')
         return redirect(url_for('urls'))
-
-
-def get_last_checks():
-    last_checks = {}
-    checks = UrlCheck.query.order_by(UrlCheck.created_at.desc()).all()
-    for check in checks:
-        if check.url_id not in last_checks:
-            last_checks[check.url_id] = check.status_code
-    return last_checks
 
 
 @app.route('/healthcheck')
