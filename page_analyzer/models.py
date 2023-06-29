@@ -1,7 +1,7 @@
 from page_analyzer.extensions import db
 
 
-class Url(db.Model):
+class URL(db.Model):
     __tablename__ = 'urls'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -12,7 +12,7 @@ class Url(db.Model):
         self.name = name
 
 
-class UrlCheck(db.Model):
+class URLCheck(db.Model):
     __tablename__ = 'url_checks'
 
     id = db.Column(db.Integer, primary_key=True)
