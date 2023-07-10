@@ -17,50 +17,55 @@ def client():
 
 
 def test_index_page(client):
-    response = client.get('/')
-    assert response.status_code == 200
-    assert 'index.html' in response.template.name
+    with app.app_context():
+        response = client.get('/')
+        assert response.status_code == 200
+        assert 'index.html' in response.template.name
 
 
 def test_add_url_valid(client):
-    data = {'url': 'http://example.com'}
-    response = client.post('/', data=data, follow_redirects=True)
-    assert response.status_code == 200
-    assert 'url.html' in response.template.name
-    url = Url.query.filter_by(name=data['url']).first()
-    assert url is not None
+    with app.app_context():
+        data = {'url': 'http://example.com'}
+        response = client.post('/', data=data, follow_redirects=True)
+        assert response.status_code == 200
+        assert 'url.html' in response.template.name
+        url = Url.query.filter_by(name=data['url']).first()
+        assert url is not None
 
 
 def test_add_url_invalid(client):
-    data = {'url': 'invalid_url'}
-    response = client.post('/', data=data, follow_redirects=True)
-    assert response.status_code == 200
-    assert 'index.html' in response.template.name
-    url = Url.query.filter_by(name=data['url']).first()
-    assert url is None
+    with app.app_context():
+        data = {'url': 'invalid_url'}
+        response = client.post('/', data=data, follow_redirects=True)
+        assert response.status_code == 200
+        assert 'index.html' in response.template.name
+        url = Url.query.filter_by(name=data['url']).first()
+        assert url is None
 
 
 def test_url_detail(client):
-    url = Url(name='http://example.com')
-    db.session.add(url)
-    db.session.commit()
-    response = client.get(url_for('url_detail', id=url.id))
-    assert response.status_code == 200
-    assert 'url.html' in response.template.name
-    assert url.name.encode() in response.data
+    with app.app_context():
+        url = Url(name='http://example.com')
+        db.session.add(url)
+        db.session.commit()
+        response = client.get(url_for('url_detail', id=url.id))
+        assert response.status_code == 200
+        assert 'url.html' in response.template.name
+        assert url.name.encode() in response.data
 
 
 def test_add_check(client):
-    url = Url(name='http://example.com')
-    db.session.add(url)
-    db.session.commit()
-    response = client.post(
-        url_for('add_check', id=url.id),
-        follow_redirects=True)
-    assert response.status_code == 200
-    assert 'url.html' in response.template.name
-    check = UrlCheck.query.filter_by(url_id=url.id).first()
-    assert check is not None
+    with app.app_context():
+        url = Url(name='http://example.com')
+        db.session.add(url)
+        db.session.commit()
+        response = client.post(
+            url_for('add_check', id=url.id),
+            follow_redirects=True)
+        assert response.status_code == 200
+        assert 'url.html' in response.template.name
+        check = UrlCheck.query.filter_by(url_id=url.id).first()
+        assert check is not None
 
 
 def test_healthcheck(client):
