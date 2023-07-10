@@ -43,6 +43,22 @@ def urls():
     return render_template('urls.html', urls=urls)
 
 
+@app.route('/urls', methods=['POST'])
+def create_url():
+    form = URLForm()
+    if form.validate_on_submit():
+        url = form.url.data
+        if validate_url(url) and len(url) <= 255:
+            new_url = Url(name=url)
+            db.session.add(new_url)
+            db.session.commit()
+            flash('Страница успешно добавлена', 'success')
+            return redirect(url_for('url_detail', id=new_url.id))
+        else:
+            flash('Ошибка: некорректный URL', 'error')
+    return redirect(url_for('index'))
+
+
 @app.route('/urls/<int:id>')
 def url_detail(id):
     url = Url.query.get(id)
@@ -51,7 +67,7 @@ def url_detail(id):
             UrlCheck.created_at.desc()).all()
         return render_template('url.html', url=url, checks=checks)
     else:
-        flash('URL не найден', 'error')
+        flash('Страница не найдена', 'error')
         return redirect(url_for('urls'))
 
 
