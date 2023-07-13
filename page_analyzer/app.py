@@ -2,9 +2,7 @@ from flask_wtf.csrf import CSRFProtect
 from flask import Flask
 import os
 
-
 from page_analyzer.extensions import db
-
 
 
 app = Flask(__name__)
