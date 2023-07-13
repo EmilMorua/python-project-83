@@ -55,8 +55,13 @@
                                         {{ url.name }}
                                     </a>
                                 </td>
-                                <td>{{ url.id.created_at }}</td>
-                                <td>{{ url.id.status_code }}</td>
+                                {% if last_checks and url.id in last_checks %}
+                                    <td>{{ last_checks[url.id]['created_at'] }}</td>
+                                    <td>{{ last_checks[url.id]['status_code'] }}</td>
+                                {% else %}
+                                    <td>N/A</td>
+                                    <td>N/A</td>
+                                {% endif %}
                             </tr>
                         {% endfor %}
                     </tbody>
