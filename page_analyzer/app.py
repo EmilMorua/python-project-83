@@ -14,10 +14,11 @@ db.init_app(app)
 
 csrf = CSRFProtect(app)
 
-from page_analyzer.handlers.index import index_handler
-from page_analyzer.handlers.urls import urls_handler
-from page_analyzer.handlers.url_detail import url_detail_handler
-from page_analyzer.handlers.add_check import add_check_handler
+from page_analyzer.handlers.index import index_handler  # noqa
+from page_analyzer.handlers.urls import urls_handler  # noqa
+from page_analyzer.handlers.url_detail import url_detail_handler  # noqa
+from page_analyzer.handlers.add_check import add_check_handler  # noqa
+
 
 app.route('/')(index_handler)
 app.route('/urls', methods=['GET', 'POST'])(urls_handler)
