@@ -1,7 +1,5 @@
 from flask import render_template, redirect, url_for
 from page_analyzer.forms import URLForm
-from page_analyzer.extensions import db
-from page_analyzer.app import app
 
 
 def index_handler():
