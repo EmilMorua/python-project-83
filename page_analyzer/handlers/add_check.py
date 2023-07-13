@@ -16,7 +16,7 @@ def add_check_handler(id):
         try:
             response = requests.get(url.name)
             new_check = create_check(url.id, response)
-            save_check(new_check, response)
+            save_check(new_check)
             flash('Страница успешно проверена', 'success')
         except RequestException:
             flash('Произошла ошибка при проверке', 'error')
