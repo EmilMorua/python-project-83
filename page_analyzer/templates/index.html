@@ -17,13 +17,13 @@
         </ul>
       </div>
     </nav>
-    {% with messages = get_flashed_messages() %}
+    {% with messages = get_flashed_messages(category_filter=['error']) %}
     {% if messages %}
-        {% for message in messages %}
-                <div class="alert alert-danger w-100" role="alert">
-                    {{ message }}
-                </div>
-        {% endfor %}
+    {% for message in messages %}
+      <div class="alert alert-danger w-100" role="alert">
+        {{ message }}
+      </div>
+    {% endfor %}
     {% endif %}
     {% endwith %}
   </header>
