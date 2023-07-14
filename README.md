@@ -11,6 +11,7 @@
 This project is a site that analyzes the specified pages for SEO suitability. You can check the availability of the specified page by getting the response code, and also check the presence of the title, description and H1 header of the page. Information about the entered URLs and the results of the checks are stored in a database.
 
 The site is deployed on platform - [Railway.app](https://railway.app/)
+
 Deployed application - [Page Analyzer](https://page-analyzer-em.up.railway.app)
 
 
