@@ -1,5 +1,5 @@
 install:
-	poetry install --no-root --no-dev
+	poetry install
 
 build:
 	poetry build
