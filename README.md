@@ -17,7 +17,6 @@ Deployed application - [Page Analyzer](https://page-analyzer-em.up.railway.app)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
 ### Installation
 
 
@@ -39,7 +38,6 @@ Deployed application - [Page Analyzer](https://page-analyzer-em.up.railway.app)
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 <!-- USAGE EXAMPLES -->
