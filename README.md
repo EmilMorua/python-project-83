@@ -19,12 +19,31 @@ The site is deployed on platform - [Railway.app](https://railway.app/)
 ### Installation
 
 
+1. Clone the repo
+   ```sh
+   git clone https://github.com/EmilMorua/python-project-83.git
+   ```
+2. Installing dependencies
+   ```sh
+   make install
+   ```
+3. Building a package
+   ```sh
+   make build
+   ```
+3. Server start
+   ```sh
+   make dev
+   ```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 
 
 <!-- USAGE EXAMPLES -->
 ## Examples of using
 
-[Demo](https://page-analyzer-em.up.railway.app)
+[Application Link](https://page-analyzer-em.up.railway.app)
 
 
 
