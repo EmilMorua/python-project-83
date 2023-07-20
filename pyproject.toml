@@ -22,7 +22,9 @@ requests = "^2.31.0"
 bs4 = "^0.0.1"
 datetime = "^5.1"
 psycopg2 = {version = "^2.9.6", optional = true}
-psycopg2-binary = {version = "^2.9.6", markers = "postgresql", optional = true}
+psycopg2-binary = {version = "^2.9.6", optional = true}
+sqlite-utils = "^3.33"
+sqlalchemy = "^2.0.19"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.3.2"
