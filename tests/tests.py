@@ -10,6 +10,7 @@ load_dotenv(dotenv_path)
 from page_analyzer.app import app as _app  # noqa
 from page_analyzer.extensions import db as _db  # noqa
 from page_analyzer.models import Url, UrlCheck  # noqa
+from page_analyzer.forms import URLForm  # noqa
 from page_analyzer.handlers.add_check import (  # noqa
     create_check,
     save_check,
@@ -46,6 +47,7 @@ class MockResponse:
 def app():
     db_uri = os.environ['SQLALCHEMY_DATABASE_URI']
     _app.config['SQLALCHEMY_TEST_DATABASE_URI'] = db_uri
+    _app.config['WTF_CSRF_ENABLED'] = False
     ctx = _app.app_context()
     ctx.push()
     yield _app
@@ -118,6 +120,26 @@ def test_url_check_relationship(db):
     assert new_check.url_id == test_url.id
     assert new_check.url == test_url
     assert test_url.checks[0] == new_check
+
+
+def test_valid_url():
+    form = URLForm(url=test_url_name)
+    assert form.validate() is True
+
+
+def test_invalid_url():
+    form = URLForm(url="invalid-url")
+    assert form.validate() is False
+
+
+def test_empty_url():
+    form = URLForm(url="")
+    assert form.validate() is False
+
+
+def test_submit_button_label():
+    form = URLForm()
+    assert form.submit.label.text == "Submit"
 
 
 def test_index_handler(client):
