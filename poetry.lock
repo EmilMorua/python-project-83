@@ -629,7 +629,7 @@ test = ["anyio (>=3.6.2)", "mypy (>=1.2)", "pproxy (>=2.7)", "pytest (>=6.2.5)",
 name = "psycopg2"
 version = "2.9.6"
 description = "psycopg2 - Python-PostgreSQL Database Adapter"
-optional = true
+optional = false
 python-versions = ">=3.6"
 files = [
     {file = "psycopg2-2.9.6-cp310-cp310-win32.whl", hash = "sha256:f7a7a5ee78ba7dc74265ba69e010ae89dae635eea0e97b055fb641a01a31d2b1"},
@@ -1179,4 +1179,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "eb606351eff36987e88a2dbc1998c8f6d051a0bc5a591e1956dc365d62dd23da"
+content-hash = "ac4ba0cd0762f7be99a6ec88f9eb175546f2cb04bfff2a39d202e8e30d81fdd5"
