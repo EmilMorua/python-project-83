@@ -38,6 +38,8 @@ expected_value_description = ("This is a very long page "
                               "description that needs to be shortened")
 text = ("<html><h1>Title</h1><title>Page Title</title><meta "
         "name='description' content='Page description'></html>")
+test_url_name = "http://example.com"
+html_parser = "html.parser"
 
 
 @pytest.fixture(scope='session')
@@ -65,12 +67,57 @@ def client(app):
 
 
 def test_url_model(db):
-    test_url = Url(name="http://example.com")
+    test_url = Url(name=test_url_name)
     db.session.add(test_url)
     db.session.commit()
 
     assert test_url.id is not None
-    assert test_url.name == "http://example.com"
+    assert test_url.name == test_url_name
+
+
+def test_url_check_model(db):
+    test_url = Url(name=test_url_name)
+    db.session.add(test_url)
+    db.session.commit()
+
+    new_check = UrlCheck(
+        url_id=test_url.id,
+        created_at=datetime.datetime.utcnow(),
+        status_code=200,
+        h1_content=expected_value_h1,
+        title_content=expected_value_title,
+        description_content=expected_value_description
+    )
+    db.session.add(new_check)
+    db.session.commit()
+
+    assert new_check.id is not None
+    assert new_check.url_id == test_url.id
+    assert new_check.created_at is not None
+    assert new_check.status_code == 200
+    assert new_check.h1_content == expected_value_h1
+    assert new_check.title_content == expected_value_title
+    assert new_check.description_content == expected_value_description
+
+
+def test_url_check_relationship(db):
+    test_url = Url(name=test_url_name)
+    db.session.add(test_url)
+
+    new_check = UrlCheck(
+        status_code=200,
+        h1_content="Test H1 Content",
+        title_content="Test Title Content",
+        description_content="Test Description Content",
+        url=test_url
+    )
+    db.session.add(new_check)
+    db.session.commit()
+
+    assert new_check.url is not None
+    assert new_check.url_id == test_url.id
+    assert new_check.url == test_url
+    assert test_url.checks[0] == new_check
 
 
 def test_index_handler(client):
@@ -79,23 +126,23 @@ def test_index_handler(client):
 
 
 def test_urls_handler(client, db):
-    test_url = Url(name="http://example.com")
+    test_url = Url(name=test_url_name)
     db.session.add(test_url)
     db.session.commit()
 
     response = client.get('/urls')
     assert response.status_code == 200
-    assert b'http://example.com' in response.data
+    assert test_url_name.encode('utf-8') in response.data
 
 
 def test_url_detail_handler(client, db):
-    test_url = Url(name="http://example.com")
+    test_url = Url(name=test_url_name)
     db.session.add(test_url)
     db.session.commit()
 
     response = client.get('/urls/1')
     assert response.status_code == 200
-    assert b'http://example.com' in response.data
+    assert test_url_name.encode('utf-8') in response.data
 
 
 def test_add_check_handler(db):
@@ -124,12 +171,12 @@ def test_create_check():
 
 
 def test_save_check(db):
-    test_url = Url(name="http://example.com")
+    test_url = Url(name=test_url_name)
     db.session.add(test_url)
     db.session.commit()
 
     with _app.app_context():
-        url = Url.query.filter_by(name="http://example.com").first()
+        url = Url.query.filter_by(name=test_url_name).first()
         assert url is not None
 
         new_check = UrlCheck(
@@ -151,19 +198,19 @@ def test_save_check(db):
 
 
 def test_get_shortened_h1_content():
-    soup = BeautifulSoup(h1, "html.parser")
+    soup = BeautifulSoup(h1, html_parser)
     shortened_content = get_shortened_h1_content(soup)
     assert shortened_content == expected_value_h1
 
 
 def test_get_shortened_title_content():
-    soup = BeautifulSoup(title, "html.parser")
+    soup = BeautifulSoup(title, html_parser)
     shortened_content = get_shortened_title_content(soup)
     assert shortened_content == expected_value_title
 
 
 def test_get_shortened_description_content():
-    soup = BeautifulSoup(description, "html.parser")
+    soup = BeautifulSoup(description, html_parser)
     shortened_content = get_shortened_description_content(soup)
     assert shortened_content == expected_value_description
 
