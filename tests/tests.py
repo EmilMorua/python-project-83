@@ -64,6 +64,15 @@ def client(app):
     return app.test_client()
 
 
+def test_url_model(db):
+    test_url = Url(name="http://example.com")
+    db.session.add(test_url)
+    db.session.commit()
+
+    assert test_url.id is not None
+    assert test_url.name == "http://example.com"
+
+
 def test_index_handler(client):
     response = client.get('/')
     assert response.status_code == 200
