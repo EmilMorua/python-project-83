@@ -17,6 +17,7 @@ Deployed application - [Page Analyzer](https://page-analyzer-em.up.railway.app)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- TECHNOLOHY STACK -->
 ### Technology stack
 
 <div>
@@ -32,6 +33,7 @@ Deployed application - [Page Analyzer](https://page-analyzer-em.up.railway.app)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- INSTALLATION -->
 ### Installation
 
 
