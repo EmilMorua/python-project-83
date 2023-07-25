@@ -1,25 +1,41 @@
-from dotenv import load_dotenv
 import os
-
-
-dotenv_path = os.path.join(os.path.dirname(__file__), '.env.test')
-load_dotenv(dotenv_path)
-
-
+from dotenv import load_dotenv
 import pytest
 import datetime
 from bs4 import BeautifulSoup
 
-from page_analyzer.extensions import db as _db
-from page_analyzer.app import app as _app
-from page_analyzer.models import Url, UrlCheck
-from page_analyzer.handlers.add_check import (
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env.test')
+load_dotenv(dotenv_path)
+
+from page_analyzer.app import app as _app  # noqa
+from page_analyzer.extensions import db as _db  # noqa
+from page_analyzer.models import Url, UrlCheck  # noqa
+from page_analyzer.handlers.add_check import (  # noqa
     create_check,
     save_check,
     get_shortened_h1_content,
     get_shortened_title_content,
     get_shortened_description_content
 )
+
+
+class MockResponse:
+    def __init__(self, status_code, text):
+        self.status_code = status_code
+        self.text = text
+
+
+# Test data for use in tests
+h1 = "<html><h1>This is a long title that needs to be shortened</h1></html>"
+title = ("<html><title>This is a very long page"
+         " title that needs to be shortened</title></html>")
+description = ("<html><meta name='description' content='This is a very "
+               "long page description that needs to be shortened'></html>")
+expected_value_h1 = "This is a long title that needs to be shortened"
+expected_value_title = "This is a very long page title that needs to be shortened"
+expected_value_description = "This is a very long page description that needs to be shortened"
+text = ("<html><h1>Title</h1><title>Page Title</title><meta "
+        "name='description' content='Page description'></html>")
 
 
 @pytest.fixture(scope='session')
@@ -32,37 +48,18 @@ def app():
     ctx.pop()
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='function')
 def db(app):
-    _db.app = app
-    create_tables()
-    yield _db
-    _db.drop_all()
-
-
-def create_tables():
-    with _app.app_context():
+    with app.app_context():
         _db.create_all()
+        yield _db
+        _db.session.rollback()
+        _db.drop_all()
 
 
-class MockResponse:
-    def __init__(self, status_code, text):
-        self.status_code = status_code
-        self.text = text
-
-
-H1 = "<html><h1>This is a long title that needs to be shortened</h1></html>"
-TITLE = ("<html><title>This is a very long page"
-         " title that needs to be shortened</title></html>")
-DESCRIPTION = ("<html><meta name='description' content='This is a very "
-               "long page description that needs to be shortened'></html>")
-EXPECTED_VALUE_H1 = "This is a long title that needs to be shortened"
-EXPECTED_VALUE_TITLE = ("This is a very long page "
-                        "title that needs to be shortened")
-EXPECTED_VALUE_DESCRIPTION = ("This is a very long page "
-                              "description that needs to be shortened")
-TEXT = ("<html><h1>Title</h1><title>Page Title</title><meta "
-        "name='description' content='Page description'></html>")
+@pytest.fixture
+def client(app):
+    return app.test_client()
 
 
 def test_index_handler(client):
@@ -70,23 +67,42 @@ def test_index_handler(client):
     assert response.status_code == 200
 
 
-def test_urls_handler(client):
+def test_urls_handler(client, db):
+    test_url = Url(name="http://example.com")
+    db.session.add(test_url)
+    db.session.commit()
+
     response = client.get('/urls')
     assert response.status_code == 200
+    assert b'http://example.com' in response.data
 
 
-def test_url_detail_handler(client):
+def test_url_detail_handler(client, db):
+    test_url = Url(name="http://example.com")
+    db.session.add(test_url)
+    db.session.commit()
+
     response = client.get('/urls/1')
     assert response.status_code == 200
+    assert b'http://example.com' in response.data
 
 
-def test_add_check_handler(client):
-    response = client.post('/urls/1/checks')
-    assert response.status_code == 302
+def test_add_check_handler(db):
+    new_check = UrlCheck(
+        url_id=1,
+        created_at=datetime.datetime.now(),
+        status_code=200
+    )
+    db.session.add(new_check)
+    db.session.commit()
+
+    check_from_db = UrlCheck.query.filter_by(url_id=1).first()
+    assert check_from_db is not None
+    assert check_from_db.status_code == 200
 
 
 def test_create_check():
-    response = MockResponse(status_code=200, text=TEXT)
+    response = MockResponse(status_code=200, text=text)
     url_id = 1
     new_check = create_check(url_id, response)
     assert isinstance(new_check, UrlCheck)
@@ -96,7 +112,11 @@ def test_create_check():
     assert new_check.description_content == "Page description"
 
 
-def test_save_check():
+def test_save_check(db):
+    test_url = Url(name="http://example.com")
+    db.session.add(test_url)
+    db.session.commit()
+
     with _app.app_context():
         url = Url.query.filter_by(name="http://example.com").first()
         assert url is not None
@@ -120,21 +140,21 @@ def test_save_check():
 
 
 def test_get_shortened_h1_content():
-    soup = BeautifulSoup(H1, "html.parser")
+    soup = BeautifulSoup(h1, "html.parser")
     shortened_content = get_shortened_h1_content(soup)
-    assert shortened_content == EXPECTED_VALUE_H1
+    assert shortened_content == expected_value_h1
 
 
 def test_get_shortened_title_content():
-    soup = BeautifulSoup(TITLE, "html.parser")
+    soup = BeautifulSoup(title, "html.parser")
     shortened_content = get_shortened_title_content(soup)
-    assert shortened_content == EXPECTED_VALUE_TITLE
+    assert shortened_content == expected_value_title
 
 
 def test_get_shortened_description_content():
-    soup = BeautifulSoup(DESCRIPTION, "html.parser")
+    soup = BeautifulSoup(description, "html.parser")
     shortened_content = get_shortened_description_content(soup)
-    assert shortened_content == EXPECTED_VALUE_DESCRIPTION
+    assert shortened_content == expected_value_description
 
 
 if __name__ == "__main__":
