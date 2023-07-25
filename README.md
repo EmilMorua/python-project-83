@@ -43,7 +43,7 @@ Deployed application - [Page Analyzer](https://page-analyzer-em.up.railway.app)
 <!-- USAGE EXAMPLES -->
 ## Examples of using
 
-![Анимированная GIF](https://cdn2.hexlet.io/store/derivatives/original/ac47e15e9b6d52aafee364d1f37b3443.gif)
+![Анимированная GIF](https://cdn2.hexlet.io/store/derivatives/original/9f43004ebc311dfa834ab28ef041def0.gif)
 
 
 <!-- CONTACT -->
