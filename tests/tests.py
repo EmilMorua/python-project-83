@@ -19,12 +19,6 @@ from page_analyzer.handlers.add_check import (  # noqa
 )
 
 
-class MockResponse:
-    def __init__(self, status_code, text):
-        self.status_code = status_code
-        self.text = text
-
-
 # Test data for use in tests
 h1 = "<html><h1>This is a long title that needs to be shortened</h1></html>"
 title = ("<html><title>This is a very long page"
@@ -40,6 +34,12 @@ text = ("<html><h1>Title</h1><title>Page Title</title><meta "
         "name='description' content='Page description'></html>")
 test_url_name = "http://example.com"
 html_parser = "html.parser"
+
+
+class MockResponse:
+    def __init__(self, status_code, text):
+        self.status_code = status_code
+        self.text = text
 
 
 @pytest.fixture(scope='session')
