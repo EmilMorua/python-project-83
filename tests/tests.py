@@ -32,8 +32,10 @@ title = ("<html><title>This is a very long page"
 description = ("<html><meta name='description' content='This is a very "
                "long page description that needs to be shortened'></html>")
 expected_value_h1 = "This is a long title that needs to be shortened"
-expected_value_title = "This is a very long page title that needs to be shortened"
-expected_value_description = "This is a very long page description that needs to be shortened"
+expected_value_title = ("This is a very long page "
+                        "title that needs to be shortened")
+expected_value_description = ("This is a very long page "
+                              "description that needs to be shortened")
 text = ("<html><h1>Title</h1><title>Page Title</title><meta "
         "name='description' content='Page description'></html>")
 
