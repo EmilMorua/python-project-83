@@ -1,12 +1,13 @@
 from flask import render_template, redirect, url_for, flash
 from page_analyzer.models import Url, UrlCheck
+from page_analyzer.extensions import db as _db
 from page_analyzer.app import app
 from page_analyzer.forms import URLForm
 
 
 @app.route('/urls/<int:id>', methods=['GET', 'POST'])
 def url_detail_handler(id):
-    url = Url.query.get(id)
+    url = _db.session.query(Url).filter_by(id=id).first()
     if url:
         form = URLForm()
         checks = UrlCheck.query \
