@@ -44,13 +44,13 @@ beautifulsoup4 = "*"
 
 [[package]]
 name = "certifi"
-version = "2023.5.7"
+version = "2023.7.22"
 description = "Python package for providing Mozilla's CA Bundle."
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "certifi-2023.5.7-py3-none-any.whl", hash = "sha256:c6c2e98f5c7869efca1f8916fed228dd91539f9f1b444c314c06eef02980c716"},
-    {file = "certifi-2023.5.7.tar.gz", hash = "sha256:0f0d56dc5a6ad56fd4ba36484d6cc34451e1c6548c61daad8c320169f91eddc7"},
+    {file = "certifi-2023.7.22-py3-none-any.whl", hash = "sha256:92d6037539857d8206b8f6ae472e8b77db8058fec5937a1ef3f54304089edbb9"},
+    {file = "certifi-2023.7.22.tar.gz", hash = "sha256:539cc1d13202e33ca466e88b2807e29f4c13049d6d87031a3c110744495cb082"},
 ]
 
 [[package]]
@@ -253,13 +253,13 @@ toml = ["tomli"]
 
 [[package]]
 name = "datetime"
-version = "5.1"
+version = "5.2"
 description = "This package provides a DateTime data type, as known from Zope. Unless you need to communicate with Zope APIs, you're probably better off using Python's built-in datetime module."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "DateTime-5.1-py3-none-any.whl", hash = "sha256:97f5ec489e75e26c2e7b4e4b37dc001389814dca1f14ec046c7f9270cf3cee9e"},
-    {file = "DateTime-5.1.tar.gz", hash = "sha256:a4191a3193c1ca4dbbaad5c958f940b9256864ba2613a53038d1613d3f63262d"},
+    {file = "DateTime-5.2-py3-none-any.whl", hash = "sha256:25250fb36f7184dad805faaf3f012e0b36f353cd97518e8f232babef5c53596e"},
+    {file = "DateTime-5.2.tar.gz", hash = "sha256:63194d2184de10e0b41e76596ba6538bd1d89db6f7b3c182789c75b0ac5c6697"},
 ]
 
 [package.dependencies]
@@ -991,26 +991,27 @@ test = ["pytest"]
 
 [[package]]
 name = "sqlite-utils"
-version = "3.33"
+version = "3.34"
 description = "CLI tool and Python library for manipulating SQLite databases"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "sqlite-utils-3.33.tar.gz", hash = "sha256:be779936dadb9decef511a46f280bd94683d385625f69a65730fb6e00e5f2656"},
-    {file = "sqlite_utils-3.33-py3-none-any.whl", hash = "sha256:a5260d0797606650847b3367547e9e3c4cba51ca88d55a1da0cef9aa2f13dfd5"},
+    {file = "sqlite-utils-3.34.tar.gz", hash = "sha256:4607683cbb32cfd4f3c63929045eaa020ab0221c5036f9bb41b7b25bc755cd23"},
+    {file = "sqlite_utils-3.34-py3-none-any.whl", hash = "sha256:234c2a3245e43ea7da588c1a879904e4b139f44ef621f5a9376d737a67e6077f"},
 ]
 
 [package.dependencies]
 click = "*"
 click-default-group-wheel = "*"
+pluggy = "*"
 python-dateutil = "*"
 sqlite-fts4 = "*"
 tabulate = "*"
 
 [package.extras]
-docs = ["beanbag-docutils (>=2.0)", "codespell", "furo", "sphinx-autobuild", "sphinx-copybutton"]
+docs = ["beanbag-docutils (>=2.0)", "codespell", "furo", "pygments-csv-lexer", "sphinx-autobuild", "sphinx-copybutton"]
 flake8 = ["flake8"]
-mypy = ["data-science-types", "mypy", "types-click", "types-python-dateutil", "types-tabulate"]
+mypy = ["data-science-types", "mypy", "types-click", "types-pluggy", "types-python-dateutil", "types-tabulate"]
 test = ["black", "cogapp", "hypothesis", "pytest"]
 tui = ["trogon"]
 
@@ -1063,13 +1064,13 @@ files = [
 
 [[package]]
 name = "urllib3"
-version = "2.0.3"
+version = "2.0.4"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "urllib3-2.0.3-py3-none-any.whl", hash = "sha256:48e7fafa40319d358848e1bc6809b208340fafe2096f1725d05d67443d0483d1"},
-    {file = "urllib3-2.0.3.tar.gz", hash = "sha256:bee28b5e56addb8226c96f7f13ac28cb4c301dd5ea8a6ca179c0b9835e032825"},
+    {file = "urllib3-2.0.4-py3-none-any.whl", hash = "sha256:de7df1803967d2c2a98e4b11bb7d6bd9210474c46e8a0401514e3a42a75ebde4"},
+    {file = "urllib3-2.0.4.tar.gz", hash = "sha256:8d22f86aae8ef5e410d4f539fde9ce6b2113a001bb4d189e0aed70642d602b11"},
 ]
 
 [package.extras]
