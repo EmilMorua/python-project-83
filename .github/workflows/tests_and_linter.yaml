@@ -26,6 +26,7 @@ jobs:
       - name: Test & publish code coverage
         uses: paambaati/codeclimate-action@v2.7.4
         env:
+          SQLALCHEMY_DATABASE_URI: ${{ secrets.SQLALCHEMY_DATABASE_URI }}
           CC_TEST_REPORTER_ID: 63bd1561c684c542056a7d7c4c144ebcf4d6327d1b2ade164a3b198afb8f38d0
         with:
           coverageCommand: poetry run pytest --cov=page_analyzer --cov-report xml tests/tests.py
