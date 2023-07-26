@@ -12,7 +12,7 @@ This project is a site that analyzes the specified pages for SEO suitability. Yo
 
 The site is deployed on platform - [Render.com](https://render.com/)
 
-Deployed application - [Page Analyzer](https://page-analyzer-em.up.railway.app)
+Deployed application - [Page Analyzer](https://page-analyzer-pkqb.onrender.com)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
