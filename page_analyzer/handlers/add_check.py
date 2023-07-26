@@ -11,7 +11,7 @@ from page_analyzer.models import Url, UrlCheck
 
 @app.route('/urls/<int:id>/checks', methods=['POST'])
 def add_check_handler(id):
-    url = Url.query.get(id)
+    url = db.session.get(Url, id)
     if url:
         try:
             response = requests.get(url.name)
