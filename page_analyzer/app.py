@@ -10,6 +10,10 @@ app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['SQLALCHEMY_DATABASE_URI']
 
+uri = app.config['SQLALCHEMY_DATABASE_URI']
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
+
 db.init_app(app)
 
 csrf = CSRFProtect(app)
