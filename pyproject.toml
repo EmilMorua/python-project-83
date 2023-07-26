@@ -24,6 +24,7 @@ psycopg2-binary = "^2.9.6"
 sqlite-utils = "^3.33"
 sqlalchemy = "^2.0.19"
 psycopg2 = "^2.9.6"
+pytest-mock = "^3.11.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.3.2"
