@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import pytest
 import datetime
 from bs4 import BeautifulSoup
+from requests.exceptions import RequestException
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env.test')
 load_dotenv(dotenv_path)
@@ -31,6 +32,8 @@ expected_value_title = ("This is a very long page "
                         "title that needs to be shortened")
 expected_value_description = ("This is a very long page "
                               "description that needs to be shortened")
+no_h1_tag = "<html><title>Title</title></html>"
+no_title_tag = "<html><h1>Title</h1></html>"
 text = ("<html><h1>Title</h1><title>Page Title</title><meta "
         "name='description' content='Page description'></html>")
 test_url_name = "http://example.com"
@@ -167,6 +170,19 @@ def test_url_detail_handler(client, db):
     assert test_url_name.encode('utf-8') in response.data
 
 
+def test_handle_url_post_invalid_url(client):
+    response = client.post('/urls', data={'url': 'invalid-url'})
+    assert response.status_code == 302
+    assert "Некорректный URL" not in response.get_data(as_text=True)
+    assert response.location.endswith("/")
+
+
+def test_handle_url_post_empty_url(client):
+    response = client.post('/urls', data={'url': ''}, follow_redirects=True)
+    assert response.status_code == 200
+    assert "URL обязателен" in response.get_data(as_text=True)
+
+
 def test_add_check_handler(db):
     new_check = UrlCheck(
         url_id=1,
@@ -219,10 +235,31 @@ def test_save_check(db):
         assert saved_check.description_content == new_check.description_content
 
 
+def test_add_check_handler_request_exception(client, db, mocker):
+    test_url = Url(name=test_url_name)
+    db.session.add(test_url)
+    db.session.commit()
+
+    mock_get = mocker.patch('requests.get')
+    mock_get.side_effect = RequestException()
+
+    response = client.post(f'/urls/{test_url.id}/checks')
+    assert response.status_code == 302
+    assert "Произошла ошибка при проверке" not in \
+        response.get_data(as_text=True)
+    assert response.location.endswith(f"/urls/{test_url.id}")
+
+
 def test_get_shortened_h1_content():
     soup = BeautifulSoup(h1, html_parser)
     shortened_content = get_shortened_h1_content(soup)
     assert shortened_content == expected_value_h1
+
+
+def test_get_shortened_h1_content_no_h1_tag():
+    soup = BeautifulSoup(no_h1_tag, html_parser)
+    shortened_content = get_shortened_h1_content(soup)
+    assert shortened_content is None
 
 
 def test_get_shortened_title_content():
@@ -231,10 +268,22 @@ def test_get_shortened_title_content():
     assert shortened_content == expected_value_title
 
 
+def test_get_shortened_title_content_no_title_tag():
+    soup = BeautifulSoup(no_title_tag, html_parser)
+    shortened_content = get_shortened_title_content(soup)
+    assert shortened_content is None
+
+
 def test_get_shortened_description_content():
     soup = BeautifulSoup(description, html_parser)
     shortened_content = get_shortened_description_content(soup)
     assert shortened_content == expected_value_description
+
+
+def test_get_shortened_description_content_no_meta_tag():
+    soup = BeautifulSoup(no_h1_tag, html_parser)
+    shortened_content = get_shortened_description_content(soup)
+    assert shortened_content is None
 
 
 if __name__ == "__main__":
