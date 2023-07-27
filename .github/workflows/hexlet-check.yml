@@ -15,13 +15,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      SQLALCHEMY_DATABASE_URI: ${{ secrets.SQLALCHEMY_DATABASE_URI }}
     steps:
       - uses: actions/checkout@v3
 
       - name: Hexlet project check
         uses: hexlet/project-action@release
-        env:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          SQLALCHEMY_DATABASE_URI: ${{ secrets.SQLALCHEMY_DATABASE_URI }}
         with:
           hexlet-id: ${{ secrets.HEXLET_ID }}
