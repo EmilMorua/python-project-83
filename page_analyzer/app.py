@@ -1,15 +1,17 @@
 from flask_wtf.csrf import CSRFProtect
 from flask import Flask
 import os
+from dotenv import load_dotenv
 
 from page_analyzer.extensions import db
 
 
+load_dotenv()
 app = Flask(__name__)
 
 print(os.environ)
 app.secret_key = os.getenv('SECRET_KEY')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 
 uri = app.config['SQLALCHEMY_DATABASE_URI']
 if uri and uri.startswith("postgres://"):
