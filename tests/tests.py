@@ -48,7 +48,7 @@ class MockResponse:
 
 @pytest.fixture(scope='session')
 def app():
-    db_uri = os.environ['DATABASE_URL']
+    db_uri = os.environ['SQLALCHEMY_DATABASE_URI']
     _app.config['SQLALCHEMY_TEST_DATABASE_URI'] = db_uri
     _app.config['WTF_CSRF_ENABLED'] = False
     ctx = _app.app_context()
