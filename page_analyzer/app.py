@@ -9,7 +9,6 @@ from page_analyzer.extensions import db
 load_dotenv()
 app = Flask(__name__)
 
-print(os.environ)
 app.secret_key = os.getenv('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 
