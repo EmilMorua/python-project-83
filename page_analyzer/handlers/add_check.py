@@ -1,21 +1,39 @@
 from datetime import datetime
 from bs4 import BeautifulSoup
 import requests
+import os
 from flask import redirect, url_for, flash
 from requests.exceptions import RequestException
-from page_analyzer.app import app
-
-from page_analyzer.extensions import db
-from page_analyzer.models import Url, UrlCheck
+import psycopg2
+from psycopg2 import sql
 
 
-@app.route('/urls/<int:id>/checks', methods=['POST'])
+def create_connection():
+    conn = psycopg2.connect(os.environ['DATABASE_URL'])
+    return conn
+
+
+def execute_query(conn, query, params=None):
+    cursor = conn.cursor()
+    cursor.execute(query, params)
+    conn.commit()
+    cursor.close()
+
+
 def add_check_handler(id):
-    url = db.session.get(Url, id)
+    conn = create_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM urls WHERE id = %s", (id,))
+    url = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
     if url:
         try:
-            response = requests.get(url.name)
-            new_check = create_check(url.id, response)
+            response = requests.get(url[1])
+            new_check = create_check(url[0], response)
             save_check(new_check)
             flash('Страница успешно проверена', 'success')
         except RequestException:
@@ -26,22 +44,36 @@ def add_check_handler(id):
         return redirect(url_for('urls_handler'))
 
 
-def create_check(url_id: int, response: requests.Response) -> UrlCheck:
-    new_check = UrlCheck(
-        url_id=url_id,
-        created_at=datetime.now(),
-        status_code=response.status_code
-    )
+def create_check(url_id, response):
+    new_check = {
+        'url_id': url_id,
+        'created_at': datetime.now(),
+        'status_code': response.status_code,
+    }
     soup = BeautifulSoup(response.text, 'html.parser')
-    new_check.h1_content = get_shortened_h1_content(soup)
-    new_check.title_content = get_shortened_title_content(soup)
-    new_check.description_content = get_shortened_description_content(soup)
+    new_check['h1_content'] = get_shortened_h1_content(soup)
+    new_check['title_content'] = get_shortened_title_content(soup)
+    new_check['description_content'] = get_shortened_description_content(soup)
     return new_check
 
 
-def save_check(new_check: UrlCheck) -> None:
-    db.session.add(new_check)
-    db.session.commit()
+def save_check(new_check):
+    conn = create_connection()
+
+    query = sql.SQL(
+        "INSERT INTO url_checks (url_id, created_at, "
+        "status_code, h1_content, title_content, "
+        "description_content) VALUES (%s, %s, %s, %s, %s, %s)")
+    execute_query(conn, query, [
+        new_check['url_id'],
+        new_check['created_at'],
+        new_check['status_code'],
+        new_check['h1_content'],
+        new_check['title_content'],
+        new_check['description_content']
+    ])
+
+    conn.close()
 
 
 def get_shortened_h1_content(soup: BeautifulSoup) -> str:
