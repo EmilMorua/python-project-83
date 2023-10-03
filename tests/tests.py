@@ -106,17 +106,20 @@ def test_add_check_handler_request_exception(client, mocker):
 
 
 def test_get_shortened_h1_content():
-    h1 = "<html><h1>This is a long title that needs to be shortened</h1></html>"
+    h1 = ("<html><h1>This is a long title "
+          "that needs to be shortened</h1></html>")
     soup = BeautifulSoup(h1, 'html.parser')
     shortened_content = get_shortened_h1_content(soup)
-    assert shortened_content == "This is a long title that needs to be shortened"
+    assert shortened_content == ("This is a long title"
+                                 " that needs to be shortened")
 
 
 def test_get_shortened_title_content():
     title = (
-        "<html><title>This is a very long page title that needs to be shortened</title></html>"
-    )
-    expected_value_title = "This is a very long page title that needs to be shortened"
+        "<html><title>This is a very long page "
+        "title that needs to be shortened</title></html>")
+    expected_value_title = ("This is a very long page "
+                            "title that needs to be shortened")
     soup = BeautifulSoup(title, "html.parser")
     shortened_content = get_shortened_title_content(soup)
     assert shortened_content == expected_value_title
@@ -131,9 +134,10 @@ def test_get_shortened_title_content_no_title_tag():
 
 def test_get_shortened_description_content():
     description = (
-        "<html><meta name='description' content='This is a very long page description that needs to be shortened'></html>"
-    )
-    expected_value_description = "This is a very long page description that needs to be shortened"
+        "<html><meta name='description' content='This is a very"
+        " long page description that needs to be shortened'></html>")
+    expected_value_description = ("This is a very long page "
+                                  "description that needs to be shortened")
     soup = BeautifulSoup(description, "html.parser")
     shortened_content = get_shortened_description_content(soup)
     assert shortened_content == expected_value_description
