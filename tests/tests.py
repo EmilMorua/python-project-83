@@ -26,6 +26,31 @@ app.config['TESTING'] = True
 app.config['WTF_CSRF_ENABLED'] = False
 
 
+TEST_URL = 'http://example.com'
+HTML_PARSER = 'html.parser'
+HTML_WITH_LONG_H1 = (
+    f"<html><h1>This is a long title "
+    "that needs to be shortened</h1></html>"
+)
+EXPECTED_SHORTENED_H1 = "This is a long title that needs to be shortened"
+HTML_WITH_LONG_TITLE = (
+    f"<html><title>This is a very long page "
+    "title that needs to be shortened</title></html>"
+)
+EXPECTED_SHORTENED_TITLE = (
+    "This is a very long page title that needs to be shortened"
+)
+HTML_WITH_SHORT_TITLE = f"<html><h1>Title</h1></html>"
+HTML_WITH_LONG_DESCRIPTION = (
+    f"<html><meta name='description' content='This is a very"
+    " long page description that needs to be shortened'></html>"
+)
+EXPECTED_SHORTENED_DESCRIPTION = (
+    "This is a very long page description that needs to be shortened"
+)
+HTML_WITHOUT_META_TAG = f"<html><title>Title</title></html>"
+
+
 @pytest.fixture
 def client():
     with app.test_client() as client:
@@ -41,7 +66,7 @@ def test_create_check():
     created_at = datetime(2023, 10, 4, 10, 12, 12)
     status_code = 200
 
-    url = Url(name='http://example.com')
+    url = Url(name=TEST_URL)
     url.save()
 
     response = MagicMock()
@@ -63,7 +88,7 @@ def test_save_check():
     created_at = datetime(2023, 10, 4, 10, 12, 12)
     status_code = 200
 
-    url = Url(name='http://example.com')
+    url = Url(name=TEST_URL)
     url.save()
 
     response = MagicMock()
@@ -87,7 +112,7 @@ def test_add_check_handler_request_exception(client, mocker):
     mock_get = mocker.patch('requests.get')
     mock_get.side_effect = RequestException()
 
-    url = Url(name='http://example.com')
+    url = Url(name=TEST_URL)
     url.save()
 
     response = client.post(f'/urls/{url.id}/checks')
@@ -98,46 +123,31 @@ def test_add_check_handler_request_exception(client, mocker):
 
 
 def test_get_shortened_h1_content():
-    h1 = ("<html><h1>This is a long title "
-          "that needs to be shortened</h1></html>")
-    soup = BeautifulSoup(h1, 'html.parser')
+    soup = BeautifulSoup(HTML_WITH_LONG_H1, HTML_PARSER)
     shortened_content = get_shortened_h1_content(soup)
-    assert shortened_content == ("This is a long title"
-                                 " that needs to be shortened")
+    assert shortened_content == EXPECTED_SHORTENED_H1
 
 
 def test_get_shortened_title_content():
-    title = (
-        "<html><title>This is a very long page "
-        "title that needs to be shortened</title></html>")
-    expected_value_title = ("This is a very long page "
-                            "title that needs to be shortened")
-    soup = BeautifulSoup(title, "html.parser")
+    soup = BeautifulSoup(HTML_WITH_LONG_TITLE, HTML_PARSER)
     shortened_content = get_shortened_title_content(soup)
-    assert shortened_content == expected_value_title
+    assert shortened_content == EXPECTED_SHORTENED_TITLE
 
 
 def test_get_shortened_title_content_no_title_tag():
-    no_title_tag = "<html><h1>Title</h1></html>"
-    soup = BeautifulSoup(no_title_tag, "html.parser")
+    soup = BeautifulSoup(HTML_WITH_SHORT_TITLE, HTML_PARSER)
     shortened_content = get_shortened_title_content(soup)
     assert shortened_content is None
 
 
 def test_get_shortened_description_content():
-    description = (
-        "<html><meta name='description' content='This is a very"
-        " long page description that needs to be shortened'></html>")
-    expected_value_description = ("This is a very long page "
-                                  "description that needs to be shortened")
-    soup = BeautifulSoup(description, "html.parser")
+    soup = BeautifulSoup(HTML_WITH_LONG_DESCRIPTION, HTML_PARSER)
     shortened_content = get_shortened_description_content(soup)
-    assert shortened_content == expected_value_description
+    assert shortened_content == EXPECTED_SHORTENED_DESCRIPTION
 
 
 def test_get_shortened_description_content_no_meta_tag():
-    no_meta_tag = "<html><title>Title</title></html>"
-    soup = BeautifulSoup(no_meta_tag, "html.parser")
+    soup = BeautifulSoup(HTML_WITHOUT_META_TAG, HTML_PARSER)
     shortened_content = get_shortened_description_content(soup)
     assert shortened_content is None
 
