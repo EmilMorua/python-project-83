@@ -29,26 +29,26 @@ app.config['WTF_CSRF_ENABLED'] = False
 TEST_URL = 'http://example.com'
 HTML_PARSER = 'html.parser'
 HTML_WITH_LONG_H1 = (
-    f"<html><h1>This is a long title "
+    "<html><h1>This is a long title "
     "that needs to be shortened</h1></html>"
 )
 EXPECTED_SHORTENED_H1 = "This is a long title that needs to be shortened"
 HTML_WITH_LONG_TITLE = (
-    f"<html><title>This is a very long page "
+    "<html><title>This is a very long page "
     "title that needs to be shortened</title></html>"
 )
 EXPECTED_SHORTENED_TITLE = (
     "This is a very long page title that needs to be shortened"
 )
-HTML_WITH_SHORT_TITLE = f"<html><h1>Title</h1></html>"
+HTML_WITH_SHORT_TITLE = "<html><h1>Title</h1></html>"
 HTML_WITH_LONG_DESCRIPTION = (
-    f"<html><meta name='description' content='This is a very"
+    "<html><meta name='description' content='This is a very"
     " long page description that needs to be shortened'></html>"
 )
 EXPECTED_SHORTENED_DESCRIPTION = (
     "This is a very long page description that needs to be shortened"
 )
-HTML_WITHOUT_META_TAG = f"<html><title>Title</title></html>"
+HTML_WITHOUT_META_TAG = "<html><title>Title</title></html>"
 
 
 @pytest.fixture
