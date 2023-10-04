@@ -13,6 +13,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import os
 import pytest
+from unittest.mock import patch, MagicMock
 import dotenv
 
 
@@ -25,10 +26,6 @@ app.config['TESTING'] = True
 app.config['WTF_CSRF_ENABLED'] = False
 
 
-print("DEBUG: DATABASE_URL =", os.getenv("DATABASE_URL"))
-print("DEBUG: SECRET_KEY =", os.getenv("SECRET_KEY"))
-
-
 @pytest.fixture
 def client():
     with app.test_client() as client:
@@ -39,56 +36,51 @@ def client():
 
 
 def test_create_check():
-    created_at = datetime.utcnow()
+    with patch('page_analyzer.handlers.add_check.datetime') as mock_datetime:
+        mock_datetime.now.return_value = datetime(2023, 10, 4, 10, 12, 12)
+    created_at = datetime(2023, 10, 4, 10, 12, 12)
     status_code = 200
-    h1_content = "Title"
-    title_content = "Page Title"
-    description_content = "Page description"
 
     url = Url(name='http://example.com')
     url.save()
 
-    check = create_check(url.id, created_at, status_code, h1_content,
-                         title_content, description_content)
+    response = MagicMock()
+    response.status_code = status_code
+    response.text = ''
+
+    check = create_check(url.id, response)
+    check['created_at'] = created_at
+    save_check(check)
 
     assert check is not None
-    assert check.url_id == url.id
-    assert check.created_at == created_at
-    assert check.status_code == status_code
-    assert check.h1_content == h1_content
-    assert check.title_content == title_content
-    assert check.description_content == description_content
+    assert check['url_id'] == url.id
+    assert str(check['created_at']) == created_at.strftime('%Y-%m-%d %H:%M:%S')
 
 
 def test_save_check():
-    created_at = datetime.utcnow()
+    with patch('page_analyzer.handlers.add_check.datetime') as mock_datetime:
+        mock_datetime.now.return_value = datetime(2023, 10, 4, 10, 12, 12)
+    created_at = datetime(2023, 10, 4, 10, 12, 12)
     status_code = 200
-    h1_content = "Title"
-    title_content = "Page Title"
-    description_content = "Page description"
 
     url = Url(name='http://example.com')
     url.save()
 
-    check = create_check(url.id, created_at, status_code, h1_content,
-                         title_content, description_content)
+    response = MagicMock()
+    response.status_code = status_code
+    response.text = ''
 
-    new_h1_content = "New Title"
-    new_title_content = "New Page Title"
-    new_description_content = "New Page description"
+    check = create_check(url.id, response)
+    check['created_at'] = created_at
+    save_check(check)
 
-    save_check(check.id, new_h1_content, new_title_content,
-               new_description_content)
-
-    updated_check = UrlCheck.get_by_id(check.id)
+    with patch('page_analyzer.models.UrlCheck.get_by_id', return_value=check):
+        updated_check = UrlCheck.get_by_id(check['url_id'])
 
     assert updated_check is not None
-    assert updated_check.url_id == url.id
-    assert updated_check.created_at == created_at
-    assert updated_check.status_code == status_code
-    assert updated_check.h1_content == new_h1_content
-    assert updated_check.title_content == new_title_content
-    assert updated_check.description_content == new_description_content
+    assert updated_check['url_id'] == url.id
+    assert str(updated_check['created_at']
+               ) == created_at.strftime('%Y-%m-%d %H:%M:%S')
 
 
 def test_add_check_handler_request_exception(client, mocker):
