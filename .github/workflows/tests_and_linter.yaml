@@ -48,7 +48,7 @@ jobs:
         run: poetry run flake8 .
 
       - name: Run tests with coverage
-        run: poetry run pytest --cov=page_analyzer --cov-report xml
+        run: poetry run pytest --cov=page_analyzer tests/tests.py --cov-report xml
 
       - name: Publish code coverage
         uses: paambaati/codeclimate-action@v2.7.4
