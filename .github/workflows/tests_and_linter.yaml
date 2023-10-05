@@ -41,7 +41,8 @@ jobs:
 
       - name: Modify test settings
         run: |
-          export DATABASE_URL=postgresql://postgres@localhost/testdb
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
 
       - name: Run flake8
         run: poetry run flake8 .
