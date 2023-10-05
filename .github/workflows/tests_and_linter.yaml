@@ -40,9 +40,8 @@ jobs:
           poetry install --no-root
 
       - name: Modify test settings
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        run: |
+          export DATABASE_URL=postgresql://postgres@localhost/testdb
 
       - name: Run flake8
         run: poetry run flake8 .
