@@ -9,30 +9,36 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [^3.10.6]
+        python-version: [3.10.6]
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+
+      - name: Install Poetry
         run: |
           python -m pip install --upgrade pip
-          pip install poetry
-          poetry install
-      - name: Check PostgreSQL status
+          python -m pip install poetry
+
+      - name: Install dependencies
         run: |
-          ps aux | grep postgres
-        continue-on-error: true
+          poetry install --no-root
+
       - name: Run flake8
         run: poetry run flake8 .
-      - name: Test & publish code coverage
+
+      - name: Run tests
+        run: poetry run pytest
+
+      - name: Publish code coverage
         uses: paambaati/codeclimate-action@v2.7.4
         env:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          DATABASE_URI: ${{ secrets.DATABASE_URL }}
-          CC_TEST_REPORTER_ID: 63bd1561c684c542056a7d7c4c144ebcf4d6327d1b2ade164a3b198afb8f38d0
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
           coverageCommand: poetry run pytest --cov=page_analyzer --cov-report xml tests/tests.py
           debug: true
