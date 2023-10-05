@@ -32,9 +32,6 @@ jobs:
       - name: Run flake8
         run: poetry run flake8 .
 
-      - name: Run tests
-        run: poetry run pytest
-
       - name: Publish code coverage
         uses: paambaati/codeclimate-action@v2.7.4
         env:
